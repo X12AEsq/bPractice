@@ -10,9 +10,13 @@ import SwiftData
 
 @main
 struct bLawPracticeApp: App {
+    @StateObject var CVModel = CommonViewModel()
+    
+// https://www.hackingwithswift.com/quick-start/swiftui/how-to-configure-core-data-to-work-with-swiftui
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            SDPractice.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -26,6 +30,7 @@ struct bLawPracticeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(CVModel)
         }
         .modelContainer(sharedModelContainer)
     }
