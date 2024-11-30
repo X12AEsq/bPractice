@@ -10,6 +10,12 @@ struct DateService {
     
     public static var monthNames:[String] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     
+    public static func monthName(date: Date) -> String {
+        let work = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        let month:Int = work.month ?? 0
+        return monthName(numMonth: month)
+    }
+    
     public static func monthName(numMonth:Int) -> String {
         if numMonth < 1 || numMonth > 12 {
             return "Undefined"
@@ -24,7 +30,11 @@ struct DateService {
     }
     
     public static func todayYear() -> String {
-        let work = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: Date())
+        return self.todayYear(date: Date())
+     }
+    
+    public static func todayYear(date: Date) -> String {
+        let work = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
         let year:Int = work.year ?? 0
         let yearString:String = FormattingService.rjf(base: String(year), len: 4, zeroFill: true)
         return yearString
@@ -36,9 +46,25 @@ struct DateService {
         let yearString:String = FormattingService.rjf(base: String(year), len: 4, zeroFill: true)
         return (year, yearString)
     }
+
+    public static func monthEnd() -> Date {
+        return self.monthEnd(target: Date())
+    }
+    
+    public static func monthEnd(target: Date) -> Date {
+        var work = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: target)
+        work.month = (work.month ?? 0) + 1
+        work.hour = (work.hour ?? 0) - 1
+        let endOfMonth = Calendar.current.date(from: work)!
+        return endOfMonth
+    }
     
     public static func monthStart() -> Date {
-        let work = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: Date())
+        return self.monthStart(target: Date())
+    }
+    
+    public static func monthStart(target: Date) -> Date {
+        let work = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: target)
         var components = DateComponents()
         components.calendar = Calendar.current
         components.year = work.year

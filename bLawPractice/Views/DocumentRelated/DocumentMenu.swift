@@ -22,6 +22,10 @@ struct DocumentMenu: View {
                         Text("Docket")
                             .font(.system(size: 30))
                     }
+                    NavigationLink(destination: MonthlyReport(practice: practice)) {
+                        Text("Monthly Report")
+                            .font(.system(size: 30))
+                    }
                 }
                 .navigationTitle(moduleTitle())
                 Spacer()
