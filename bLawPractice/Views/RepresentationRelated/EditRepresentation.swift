@@ -87,7 +87,7 @@ struct EditRepresentation: View {
                 }
             }
             Form {
-                Section(header: Text("Representation").background(Color.teal).foregroundColor(.white).font(.system(size: 20))) {
+                Section(header: Text("Representation \(workInternalID)").background(Color.teal).foregroundColor(.white).font(.system(size: 20))) {
                     HStack {
                         if workActive {
                             Text("Representation is active")
@@ -151,7 +151,7 @@ struct EditRepresentation: View {
                 Section {
                     VStack(alignment: .leading) {
                         HStack {
-                            Text("Cause: \(workCause.internalID) No:\(workCause.causeNo ?? "No Cause") Type:\(workCause.causeType ?? "No Type") level:\(workCause.level ?? "No Level") court:\(workCause.court ?? "No Court") charge:\(workCause.originalCharge ?? "No Charge")")
+                            Text("Cause: \(workCause.internalID) Number:\(workCause.causeNo ?? "No Cause") Type:\(workCause.causeType ?? "No Type") level:\(workCause.level ?? "No Level") court:\(workCause.court ?? "No Court") charge:\(workCause.originalCharge ?? "No Charge")")
                         }
                         HStack {
                             Text("Client: \(workCause.client?.internalID ?? -1) Name:\(workCause.client?.lastName ?? "No Name") \(workCause.client?.firstName ?? "") \(workCause.client?.middleName ?? "") Addr:\(workCause.client?.addr1 ?? "") \(workCause.client?.addr2 ?? "") \(workCause.client?.city ?? "") \(workCause.client?.state ?? "")\(workCause.client?.zip ?? "")")
@@ -174,7 +174,7 @@ struct EditRepresentation: View {
                         Text("Add Note")
                     }
                     List(workNotes, id: \.id ) { noteEN in
-                        Text(noteEN.printLine)
+//                        Text(noteEN.printLine)
                         NavigationLink(noteEN.printLine, value: NavEditNote(id: UUID(), option: "Mod", representation: rep, note: noteEN))
                     }
                 }
@@ -201,6 +201,18 @@ struct EditRepresentation: View {
                         Button {
                             print("delete this")
                             deleteFlag = false
+                            modelContext.delete(rep!)
+                            do {
+                                try modelContext.save()
+                                CVModel.selectedRepresentation = nil
+                                statusMessage = ""
+                                initWorkArea()
+                                if nav.selectionPath.count > 0 {
+                                    nav.selectionPath.removeLast()
+                                }
+                            } catch {
+                                statusMessage = "Error deleting representation: \(error.localizedDescription)"
+                            }
                         } label: {
                             Label("Really?", systemImage: "trash").labelStyle(.titleAndIcon)
                         }
@@ -244,7 +256,7 @@ struct EditRepresentation: View {
                                 if workingInternalID > 0 {
                                     CVModel.selectedRepresentation = SDRepresentation(internalID: workInternalID, active: workActive, assignedDate: workAssignedDateTime, dispositionDate: workDispositionDateTime, dispositionType: workDispositionType, dispositionAction: workDispositionAction, primaryCategory: workPrimaryCategory)
                                     CVModel.selectedRepresentation?.cause = workCause
-                                    if let tempClient = workClient {
+                                    if workClient != nil {
                                         CVModel.selectedRepresentation?.client = workClient
                                     } else {
                                         if let tempClient = CVModel.selectedRepresentation?.cause?.client {
@@ -258,6 +270,9 @@ struct EditRepresentation: View {
                                         initWorkArea()
                                     } catch {
                                         statusMessage = "Error inserting new representation: \(error.localizedDescription)"
+                                    }
+                                    if nav.selectionPath.count > 0 {
+                                        nav.selectionPath.removeLast()
                                     }
                                 } else {
                                     statusMessage = "Error assigning new representation number"
@@ -316,6 +331,7 @@ struct EditRepresentation: View {
             startAppearances = []
         } else {
             if let representation: SDRepresentation = rep {
+                CVModel.selectedRepresentation = representation
                 startInternalID = representation.internalID
                 startActive = representation.active
                 startAssignedDateTime = representation.assignedDateTime
@@ -332,6 +348,7 @@ struct EditRepresentation: View {
                     startClient = nil
                 }
                 startAppearances = representation.appearances?.sorted(by: { $0.appearDateTime < $1.appearDateTime } ) ?? []
+                startNotes = representation.notes?.sorted(by: { $0.noteDateTime < $1.noteDateTime } ) ?? []
             }
             workInternalID = startInternalID
             workActive = startActive
@@ -343,6 +360,7 @@ struct EditRepresentation: View {
             workCause = startCause ?? SDCause()
             workClient = startClient
             workAppearances = startAppearances
+            workNotes = startNotes
             
             resetCause(cause: workCause)
         }

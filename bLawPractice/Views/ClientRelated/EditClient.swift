@@ -75,7 +75,7 @@ struct EditClient: View {
                 }
             }
             Form {
-                Section(header: Text("Client Name").background(Color.teal).foregroundColor(.white)) {
+                Section(header: Text("Client Name \(workInternalID)").background(Color.teal).foregroundColor(.white)) {
                     HStack {
                         Text("Last Name: ").foregroundColor(.mint)
                         TextField("Last Name", text: $workLastName).disableAutocorrection(true)
@@ -281,6 +281,7 @@ struct EditClient: View {
             startMiscDocketTime = "0900"
             CVModel.selectedClient = nil
         } else {
+            CVModel.selectedClient = client
             startInternalID = client?.internalID ?? -1
             startLastName = client?.lastName ?? ""
             startFirstName = client?.firstName ?? ""

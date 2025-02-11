@@ -7,7 +7,7 @@
 
 import Foundation
 struct AppearanceTypes {
-    public static var appearanceTypes:[String] = ["ORIG", "NISS", "JURY", "BENCH", "PLEA", "MOTN", "SENTC", "SHOWC", "FTA", "UNK"]
+    public static var appearanceTypes:[String] = ["INIT", "UNSC", "ORIG", "NISS", "JURY", "BENCH", "PLEA", "MOTN", "SENTC", "SHOWC", "FTA", "UNK"]
     public static func xlateType(inType:String) -> (valid:Bool, descr:String) {
         switch inType {
         case "ORIG":
@@ -30,6 +30,10 @@ struct AppearanceTypes {
             return (true, "FTA Hearing")
         case "UNK":
             return (true, "Not Specified")
+        case "INIT":
+            return (true, "Initial")
+        case "UNSC":
+            return (true, "Unscheduled")
         default:
             return (false, "Invalid")
         }

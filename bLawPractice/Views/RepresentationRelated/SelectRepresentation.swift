@@ -95,7 +95,7 @@ struct SelectRepresentation: View {
             } else {
                 repListEntry.header = (rep.cause?.causeNo ?? "") + " - " + (rep.client?.fullName ?? "")
             }
-            repListEntry.header += " - \(rep.active ? "Active" : "Closed")"
+            repListEntry.header += " - \(rep.active ? "Active" : "Closed") \(rep.primaryCategory)"
             repListEntry.rep = rep
             returnList.append(repListEntry)
         }

@@ -42,8 +42,10 @@ struct RepSelCause: View {
                         HStack{
                             Button(cau.id) {
                                 print("Button tapped!")
-                                nav.selectionPath.removeLast()
-                             }
+                                if nav.selectionPath.count > 0 {
+                                    nav.selectionPath.removeLast()
+                                }
+                            }
                             .buttonStyle(CustomButton1())
                             Spacer()
                         }

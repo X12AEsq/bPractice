@@ -81,7 +81,7 @@ class SDAppearance: Codable {
         let Sdate: String = DateService.dateDate2String(inDate:self.appearDateTime, short:true)
         let Stime: String = DateService.dateTime2String(inDate:self.appearDateTime)
         let Sreason: String = FormattingService.ljf(base: self.appearReason, len: 10)
-        let Snote: String = FormattingService.ljf(base: self.appearNote, len: 40)
+        let Snote: String = FormattingService.ljf(base: self.appearNote, len: 60)
         return "\(SinternalID) \(Sdate) \(Stime) \(Sreason) \(Snote)"
     }
 }

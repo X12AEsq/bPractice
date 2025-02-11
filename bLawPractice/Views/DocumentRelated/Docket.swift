@@ -14,6 +14,7 @@ struct Docket: View {
     @EnvironmentObject var nav: NavigationStateManager
 
     @Query(sort: [SortDescriptor(\SDAppearance.appearDateTime)]) var sortedAppearances: [SDAppearance]
+    @Query(sort: [SortDescriptor(\SDNote.noteDateTime, order: .reverse)]) var sortedNotes: [SDNote]
 
     @State var docketLocation:String = ""
     @State var showDocket:Bool = false
@@ -125,6 +126,16 @@ struct Docket: View {
         return returnedAppearances
     }
     
+    func candidateNote(appr: SDAppearance) -> (valid:Bool, latestNote:SDNote?) {
+         if let workrep:SDRepresentation = appr.representation {
+            if workrep.notes?.count ?? -1 > 0 {
+                let worknotes: [SDNote] = workrep.notes?.sorted(by: { $0.noteDateTime > $1.noteDateTime }) ?? []
+                return (true, worknotes.first)
+            }
+        }
+        return (false, nil)
+    }
+
     func generatePDF() -> Data? {
     /**
     W: 8.5 inches * 72 DPI = 612 points
@@ -231,6 +242,7 @@ struct Docket: View {
         numericStyle.alignment = .right
         alphaStyle.alignment = .left
         let interField:CGFloat = 5
+        let searchResult = candidateNote(appr: appr)
 
         let numericAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 12),
@@ -288,8 +300,27 @@ struct Docket: View {
         let apprNoteRect = CGRect(x: apprTimeStart, y: row1Start, width: apprNoteWidth, height: rowHeight)
         let apprNoteString = NSAttributedString(string: String(appr.appearNote), attributes: alphaAttributes)
         apprNoteString.draw(in: apprNoteRect)
+        
+        let row2Start: CGFloat = row1Start + rowHeight
 
-        return row1Start + 100
+        if searchResult.valid {
+            let apprDateWidth: CGFloat = 80
+            let apprDateStart: CGFloat = origin.x + apprIDWidth + interField
+            let apprDateRect = CGRect(x: apprDateStart, y: row2Start, width: apprDateWidth, height: rowHeight)
+            let apprDateString = NSAttributedString(string: searchResult.latestNote?.noteDate.description ?? "----", attributes: alphaAttributes)
+            apprDateString.draw(in: apprDateRect)
+            
+            let apprNoteWidth: CGFloat = 500
+            let apprNoteStart: CGFloat = apprDateStart + apprDateWidth + interField
+            let apprNoteRect = CGRect(x: apprNoteStart, y: row2Start, width: apprNoteWidth, height: rowHeight)
+            let noteText:String = searchResult.latestNote?.noteNote ?? "---- No Note"
+            let apprNoteString = NSAttributedString(string: noteText, attributes: alphaAttributes)
+            apprNoteString.draw(in: apprNoteRect)
+
+
+        }
+        
+        return row2Start + 100
     }
 
     func clientName(rep:SDRepresentation?) -> String {

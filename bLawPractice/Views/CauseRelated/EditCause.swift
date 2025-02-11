@@ -14,6 +14,7 @@ struct EditCause: View {
     @EnvironmentObject var nav: NavigationStateManager
     
     @Query(sort: [SortDescriptor(\SDCause.causeNo)]) var sortedCauses: [SDCause]
+    @Query(sort: [SortDescriptor(\SDCause.internalID, order: .reverse)]) var inverseSortedCauses: [SDCause]
 
     @State var startInternalID:Int = -1
     @State var startCauseNo:String = ""
@@ -67,9 +68,9 @@ struct EditCause: View {
                 }
             }
             Form {
-                Section(header: Text("Cause").background(Color.teal).foregroundColor(.white).font(.system(size: 20))) {
+                Section(header: Text("Cause \(workInternalID)").background(Color.teal).foregroundColor(.white).font(.system(size: 20))) {
                     HStack {
-                        Text("Cause Number")
+                        Text("Cause Number").foregroundColor(.mint)
                         TextField("", text: $workCauseNo).disableAutocorrection(true)
                     }
                     Picker("CauseType", selection: $workCauseType) {
@@ -97,7 +98,7 @@ struct EditCause: View {
                         }
                     }
                     HStack {
-                        Text("Charge")
+                        Text("Charge").foregroundColor(.mint)
                         TextField("", text: $workOriginalCharge).disableAutocorrection(true)
                     }
                 }
@@ -177,8 +178,8 @@ struct EditCause: View {
                             if option == "Add" {
                                 var workingInternalID = 0
                                 
-                                if sortedCauses.count > 0 {
-                                    workingInternalID = sortedCauses[0].internalID
+                                if inverseSortedCauses.count > 0 {
+                                    workingInternalID = inverseSortedCauses[0].internalID
                                     workingInternalID += 1
                                 } else {
                                     workingInternalID = 1
@@ -241,6 +242,7 @@ struct EditCause: View {
             startClientSuffix = ""
             startClient = nil
         } else {
+            CVModel.selectedCause = cause
             startInternalID = cause?.internalID ?? -1
             startCauseNo = cause?.causeNo ?? ""
             startCauseType = cause?.causeType ?? "UNK"

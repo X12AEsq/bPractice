@@ -25,7 +25,7 @@ struct EditAppearance: View {
     @State var workRepresentation: SDRepresentation?
     @State var workAppearDateTime: Date = Date.distantPast
     @State var workAppearNote: String = ""
-    @State var workAppearReason: String = ""
+    @State var workAppearReason: String = "UNK"
 
     @State var deleteFlag:Bool = false
 
@@ -170,6 +170,11 @@ struct EditAppearance: View {
                                 statusMessage = "Error assigning new appearance id number"
                             }
                         } else {    // end of option-Add
+                            workAppearance?.internalID = workInternalID
+                            workAppearance?.representation = workRepresentation
+                            workAppearance?.appearDateTime = workAppearDateTime
+                            workAppearance?.appearNote = workAppearNote
+                            workAppearance?.appearReason = workAppearReason
                             do {
                                 try modelContext.save()
                                 CVModel.selectedAppearance?.appearDateTime = workAppearDateTime
@@ -214,13 +219,13 @@ struct EditAppearance: View {
             let startAppearDate: String = DateService.dateDate2String(inDate:Date(), short:true)
             startAppearDateTime = DateService.shortDateTime2String(inDate: startAppearDate, inTime: "0900")
             startAppearNote = ""
-            startAppearReason = ""
+            startAppearReason = "UNK"
         } else {
             startInternalID = workAppearance?.internalID ?? -1
             startRepresentation = representation
             startAppearDateTime = workAppearance?.appearDateTime ?? Date.distantPast
-            startAppearNote = ""
-            startAppearReason = ""
+            startAppearNote = workAppearance?.appearNote ?? ""
+            startAppearReason = workAppearance?.appearReason ?? "UNK"
         }
         
         workInternalID = startInternalID
