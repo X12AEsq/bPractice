@@ -75,7 +75,6 @@ class SDRepresentation: Codable {
         self.primaryCategory = ""
     }
     
-    
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.internalID = try container.decode(Int.self, forKey: .internalID)
@@ -134,6 +133,22 @@ class SDRepresentation: Codable {
             return workCause.causeNo ?? "No Cause Number"
         } else {
             return "No Cause Number"
+        }
+    }
+    
+    @Transient var causeCharge:String {
+        if let workCause = self.cause {
+            return workCause.originalCharge ?? "No Charge"
+        } else {
+            return "No Charge"
+        }
+    }
+    
+    @Transient var repActiveString:String {
+        if self.active {
+            return "Active"
+        } else {
+            return "Inactive"
         }
     }
 }

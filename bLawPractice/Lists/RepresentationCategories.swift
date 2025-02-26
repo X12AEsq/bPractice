@@ -7,7 +7,7 @@
 
 import Foundation
 struct RepresentationCategories {
-    public static var representationCategories:[String] = ["ORIG", "MTR", "MTA", "CPS", "CIV", "UNK"]
+    public static var representationCategories:[String] = ["ORIG", "MTR", "MTA", "MTW", "CPS", "CIV", "UNK"]
     public static func xlateCategory(inCat:String) -> (valid:Bool, descr:String) {
         switch inCat {
         case "ORIG":
@@ -16,6 +16,8 @@ struct RepresentationCategories {
             return (true, "Motion to Revoke")
         case "MTA":
             return (true, "Motion to Adjudicate")
+        case "MTW":
+            return (true, "Motion to Withdraw")
         case "CPS":
             return (true, "Child Protection")
         case "CIV":
