@@ -70,6 +70,7 @@ struct SelectRepresentation: View {
                 EditAppearance(option: "Mod", practice: practice, representation: selValue.representation, appearance: selValue.appearance)
             }
             .navigationTitle(moduleTitle())
+            .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
             selectionList = buildList(option: sortOption)

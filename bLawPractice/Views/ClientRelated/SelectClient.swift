@@ -61,6 +61,7 @@ struct SelectClient: View {
                 }
             }
             .navigationTitle(moduleTitle())
+            .navigationBarTitleDisplayMode(.inline)
             .onAppear() {
                 print("")
             }

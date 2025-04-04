@@ -191,6 +191,13 @@ struct DateService {
         return formatter.date(from: inDate)!
     }
     
+    public static func date2Int(inDate: Date) -> Int {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd"
+        let work = formatter.string(from: inDate)
+        return Int(work)!
+    }
+    
     public static func shortDateTime2String(inDate: String, inTime: String) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMddHHmm"

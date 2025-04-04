@@ -8,11 +8,13 @@
 import Foundation
 class VerifyRepresentation {
     public static func verifyRepresentation(internalID: Int, active: Bool, assignedDate: Date, dispositionDate: Date, dispositionType: String, dispositionAction: String, primaryCategory: String, cause:SDCause?, appearances:[SDAppearance]?, notes:[SDNote]?, practice:SDPractice?)  -> ( errNo:Int, errDescr:String ) {
+        let aD:Int = DateService.date2Int(inDate: assignedDate)
+        let dD:Int = DateService.date2Int(inDate: dispositionDate)
         if internalID < 1 {
             return (errNo: 1, errDescr: "internal id \(internalID) is invalid")
         }
-        if assignedDate > dispositionDate {
-            return (errNo: 2, errDescr: "Disposition date must be greatre than or equal to assigned date")
+        if aD > dD {
+            return (errNo: 2, errDescr: "Disposition date must be greater than or equal to assigned date")
         }
         if cause == nil {
             return (errNo: 3, errDescr: "Must specify a cause")

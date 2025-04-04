@@ -59,7 +59,7 @@ struct Docket: View {
                             Text(" Docket ")
                                 .font(.system(size: 30))
                         }
-                        .buttonStyle(CustomButton1())
+                        .buttonStyle(CustomButtonBlack())
                         Spacer()
                     }
                     .padding(.leading, 20)
@@ -82,7 +82,7 @@ struct Docket: View {
                             Text(" Done ")
                                 .font(.system(size: 30))
                         }
-                        .buttonStyle(CustomButton1())
+                        .buttonStyle(CustomButtonBlack())
                         Button {
                             docketLocation = ""
                             let docket = generatePDF()
@@ -92,7 +92,7 @@ struct Docket: View {
                             Text(" Print ")
                                 .font(.system(size: 30))
                         }
-                        .buttonStyle(CustomButton1())
+                        .buttonStyle(CustomButtonBlack())
                         if docketReady {
                             ShareLink(item: docketURL!)
                         }

@@ -54,7 +54,8 @@ struct EditClient: View {
     @State var deleteFlag:Bool = false
 
     @State var statusMessage:String = ""
-    
+    @State var workOption:String = ""
+
     var practice: SDPractice
     var option: String
     var client: SDClient?
@@ -63,7 +64,7 @@ struct EditClient: View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
                 Text(moduleTitle())
-                    .font(.system(size: 30))
+                    .font(.system(size: 20))
                     .padding(.leading, 30)
                     .padding(.bottom, 20)
                 if statusMessage != "" {
@@ -156,6 +157,20 @@ struct EditClient: View {
                     Button {
                         print("delete this")
                         deleteFlag = false
+                        modelContext.delete(CVModel.selectedClient!)
+                        do {
+                            try modelContext.save()
+                            workOption = "Add"
+                            CVModel.selectedClient = nil
+//                            workAppearance = nil
+                            statusMessage = ""
+                            initWorkArea()
+                            if nav.selectionPath.count > 0 {
+                                nav.selectionPath.removeLast()
+                            }
+                        } catch {
+                            statusMessage = "Error deleting appearance: \(error.localizedDescription)"
+                        }
                     } label: {
                         Label("Really?", systemImage: "trash").labelStyle(.titleAndIcon)
                     }
@@ -261,7 +276,8 @@ struct EditClient: View {
     }
 
     func initWorkArea() {
-        if option == "Add" {
+        workOption = option
+        if workOption == "Add" {
             startInternalID = -1
             startLastName = ""
             startFirstName = ""

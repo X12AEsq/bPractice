@@ -44,7 +44,7 @@ extension EditRepresentation {
                                 causeSelected = cau.cause ?? SDCause()
                                 gettingCause = false
                             }
-                            .buttonStyle(CustomButton1())
+                            .buttonStyle(CustomButtonBlack())
                             Spacer()
                         }
                         .padding(.leading, 20)

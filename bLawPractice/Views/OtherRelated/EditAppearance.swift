@@ -18,12 +18,16 @@ struct EditAppearance: View {
     @State var startInternalID: Int = -1
     @State var startRepresentation: SDRepresentation?
     @State var startAppearDateTime: Date = Date.distantPast
+    @State var startAppearDate: String = ""
+    @State var startAppearTime: String = ""
     @State var startAppearNote: String = ""
     @State var startAppearReason: String = ""
 
     @State var workInternalID: Int = -1
     @State var workRepresentation: SDRepresentation?
     @State var workAppearDateTime: Date = Date.distantPast
+    @State var workAppearDate: String = ""
+    @State var workAppearTime: String = ""
     @State var workAppearNote: String = ""
     @State var workAppearReason: String = "UNK"
 
@@ -34,6 +38,11 @@ struct EditAppearance: View {
     @State var workOption:String = ""
     @State var workAppearance: SDAppearance? = nil
     
+    @State var is0900: Bool = false
+    @State var is1315: Bool = false
+    @State var isCustom: Bool = false
+    @State var appearTime: String = ""
+    
     var option:String
     var practice: SDPractice
     var representation: SDRepresentation?
@@ -41,48 +50,67 @@ struct EditAppearance: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack(alignment: .top) {
-                Text(moduleTitle())
-                    .font(.system(size: 30))
-                    .padding(.leading, 20)
-                    .padding(.bottom, 20)
-                if statusMessage != "" {
-                    Text(statusMessage)
-                        .font(.body)
-                        .foregroundColor(Color.red)
-                        .multilineTextAlignment(.leading)
-                        .padding(.bottom)
-                }
-            }
-            Form {
-                Section(header: Text("Parents").background(Color.teal).foregroundColor(.white).font(.system(size: 20))) {
-                    HStack {
-                        Text("\(repString(rep: representation).rep)")
-                    }
-                    HStack {
-                        Text("\(repString(rep: representation).cause)")
-                    }
-                    HStack {
-                        Text("\(repString(rep: representation).client)")
+            GeometryReader { proxy in
+                HStack(alignment: .top) {
+                    Text(moduleTitle())
+                        .font(.system(size: 30))
+                        .padding(.leading, 20)
+                        .padding(.bottom, 20)
+                    if statusMessage != "" {
+                        Text(statusMessage)
+                            .font(.body)
+                            .foregroundColor(Color.red)
+                            .multilineTextAlignment(.leading)
+                            .padding(.bottom)
                     }
                 }
-                Section(header: Text("Appearance").background(Color.teal).foregroundColor(.white).font(.system(size: 20))) {
-                    HStack {
-                        Text("Appearance Date:")
-                        DatePicker("", selection: $workAppearDateTime)
-                    }
-                    HStack {
-                        Text("Note:")
-                        TextField("", text: $workAppearNote)
-                    }
-                    HStack {
-                        Text("Reason")
-                        Picker("", selection: $workAppearReason) {
-                            ForEach(AppearanceTypes.appearanceTypes, id: \.self) {
-                                Text($0)
-                            }
+                Form {
+                    Section(header: Text("Parents").background(Color.teal).foregroundColor(.white).font(.system(size: 20))) {
+                        HStack {
+                            Text("\(repString(rep: representation).rep)")
                         }
-                        Text(AppearanceTypes.xlateType(inType: workAppearReason).descr)
+                        HStack {
+                            Text("\(repString(rep: representation).cause)")
+                        }
+                        HStack {
+                            Text("\(repString(rep: representation).client)")
+                        }
+                    }
+                    Section(header: Text("Appearance").background(Color.teal).foregroundColor(.white).font(.system(size: 20))) {
+                        // TODO: Finish assembling the actual date
+                        //                    HStack {
+                        //                        HStack {
+                        //                            Text("Appearance Date: \(workAppearDate)")
+                        //                            Text("Appearance Time: \(workAppearTime)")
+                        //                        }
+                        //                    }
+                        
+                        HStack {
+                            Text("Appearance Date:").frame(width: proxy.size.width * 0.25)
+                            DatePicker("", selection: $workAppearDateTime, displayedComponents: [.date]).onChange(of: workAppearDateTime, initial: true, {         workAppearDate = DateService.dateDate2String(inDate: workAppearDateTime, short:true) }).frame(width: proxy.size.width * 0.2)
+                            HStack {
+                                Picker("Appearance Time:",
+                                       selection: $workAppearTime) {
+                                    Text("0900")
+                                        .tag("0900")
+                                    Text("1315")
+                                        .tag("1315")
+                                }.onChange(of: workAppearTime, initial: true, { workAppearDateTime = DateService.shortDateTime2String(inDate: workAppearDate, inTime: workAppearTime) } ).frame(width: proxy.size.width * 0.2)
+                            }
+                        }//.padding(.trailing, proxy.size.width * 0.3)
+                        HStack {
+                            Text("Note:")
+                            TextField("", text: $workAppearNote)
+                        }
+                        HStack {
+                            Text("Reason")
+                            Picker("", selection: $workAppearReason) {
+                                ForEach(AppearanceTypes.appearanceTypes, id: \.self) {
+                                    Text($0)
+                                }
+                            }
+                            Text(AppearanceTypes.xlateType(inType: workAppearReason).descr)
+                        }.padding(.trailing, proxy.size.width * 0.5)
                     }
                 }
             }
@@ -216,21 +244,43 @@ struct EditAppearance: View {
             startInternalID = -1
             startRepresentation = representation
             startAppearDateTime = Date()
-            let startAppearDate: String = DateService.dateDate2String(inDate:Date(), short:true)
-            startAppearDateTime = DateService.shortDateTime2String(inDate: startAppearDate, inTime: "0900")
+            startAppearDate = DateService.dateDate2String(inDate: startAppearDateTime, short:true)
+            startAppearTime = DateService.dateTime2String(inDate: startAppearDateTime)
             startAppearNote = ""
             startAppearReason = "UNK"
+            is0900 = true
+            is1315 = false
+            isCustom = false
         } else {
             startInternalID = workAppearance?.internalID ?? -1
             startRepresentation = representation
             startAppearDateTime = workAppearance?.appearDateTime ?? Date.distantPast
+            startAppearDate = DateService.dateDate2String(inDate: startAppearDateTime, short:true)
+            startAppearTime = DateService.dateTime2String(inDate: startAppearDateTime)
             startAppearNote = workAppearance?.appearNote ?? ""
             startAppearReason = workAppearance?.appearReason ?? "UNK"
+            if DateService.dateTime2String(inDate: startAppearDateTime) == "0900" {
+                is0900 = true
+                is1315 = false
+                isCustom = false
+            } else {
+                if DateService.dateTime2String(inDate: startAppearDateTime) == "1315" {
+                    is0900 = false
+                    is1315 = true
+                    isCustom = false
+                } else {
+                    is0900 = false
+                    is1315 = true
+                    isCustom = true
+                }
+            }
         }
         
         workInternalID = startInternalID
         workRepresentation = startRepresentation
         workAppearDateTime = startAppearDateTime
+        workAppearDate = startAppearDate
+        workAppearTime = startAppearTime
         workAppearNote = startAppearNote
         workAppearReason = startAppearReason
     }

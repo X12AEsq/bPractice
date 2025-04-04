@@ -69,7 +69,7 @@ struct Representations: View {
                             Text(" Report ")
                                 .font(.system(size: 30))
                         }
-                        .buttonStyle(CustomButton1())
+                        .buttonStyle(CustomButtonBlack())
                         Spacer()
                     }
                     .padding(.leading, 20)
@@ -82,7 +82,7 @@ struct Representations: View {
                             Text(" Done ")
                                 .font(.system(size: 30))
                         }
-                        .buttonStyle(CustomButton1())
+                        .buttonStyle(CustomButtonBlack())
                         Button {
                             reportLocation = ""
                             let report = generatePDF()
@@ -92,7 +92,7 @@ struct Representations: View {
                             Text(" Print ")
                                 .font(.system(size: 30))
                         }
-                        .buttonStyle(CustomButton1())
+                        .buttonStyle(CustomButtonBlack())
                         if docketReady {
                             ShareLink(item: reportURL!)
                         }
@@ -137,6 +137,8 @@ struct Representations: View {
             return workReps1 + workReps2
         case "Client Name":
             return sortedRepresentations.sorted(by: {$0.client?.fullName ?? "" < $1.client?.fullName ?? ""})
+        case "Assigned Only":
+            return sortedRepresentations.filter({$0.active && $0.cause?.causeType != "Priv" && $0.cause?.level != "CPS"}).sorted(by: {$0.client?.fullName ?? "" < $1.client?.fullName ?? ""})                                                
         default:
             return []
         }
@@ -195,7 +197,7 @@ struct Representations: View {
         let paragraphStyle = NSMutableParagraphStyle()
         let alphaStyle = NSMutableParagraphStyle()
         let numericStyle = NSMutableParagraphStyle()
-        let interField:CGFloat = 5
+        let interField:CGFloat = 4
         numericStyle.alignment = .right
         alphaStyle.alignment = .left
         let rowHeight: CGFloat = 12
@@ -256,6 +258,36 @@ struct Representations: View {
         let repDisposedRect = CGRect(x: repDisposedStart, y: header3Y, width: repDisposedWidth, height: rowHeight)
         let repDisposedString = NSAttributedString(string: "Disposed", attributes: alphaAttributes)
         repDisposedString.draw(in: repDisposedRect)
+        
+        let repCauseNoWidth: CGFloat = 50
+        let repCauseNoStart: CGFloat = repDisposedStart + repDisposedWidth + interField
+        let repCauseNoRect = CGRect(x: repCauseNoStart, y: header3Y, width: repCauseNoWidth, height: rowHeight)
+        let repCauseNoString = NSAttributedString(string: "Cause", attributes: alphaAttributes)
+        repCauseNoString.draw(in: repCauseNoRect)
+        
+        let repCauseTypeWidth: CGFloat = 22
+        let repCauseTypeStart: CGFloat = repCauseNoStart + repCauseNoWidth + interField
+        let repCauseTypeRect = CGRect(x: repCauseTypeStart, y: header3Y, width: repCauseTypeWidth, height: rowHeight)
+        let repCauseTypeString = NSAttributedString(string: "Type", attributes: alphaAttributes)
+        repCauseTypeString.draw(in: repCauseTypeRect)
+        
+        let repCauseLevelWidth: CGFloat = 20
+        let repCauseLevelStart: CGFloat = repCauseTypeStart + repCauseTypeWidth + interField
+        let repCauseLevelRect = CGRect(x: repCauseLevelStart, y: header3Y, width: repCauseLevelWidth, height: rowHeight)
+        let repCauseLevelString = NSAttributedString(string: "Lev", attributes: alphaAttributes)
+        repCauseLevelString.draw(in: repCauseLevelRect)
+        
+        let repCauseActionWidth: CGFloat = 20
+        let repCauseActionStart: CGFloat = repCauseLevelStart + repCauseLevelWidth + interField
+        let repCauseActionRect = CGRect(x: repCauseActionStart, y: header3Y, width: repCauseActionWidth, height: rowHeight)
+        let repCauseActionString = NSAttributedString(string: "Act", attributes: alphaAttributes)
+        repCauseActionString.draw(in: repCauseActionRect)
+        
+        let repRepTypeWidth: CGFloat = 20
+        let repRepTypeStart: CGFloat = repCauseActionStart + repCauseActionWidth + interField
+        let repRepTypeRect = CGRect(x: repRepTypeStart, y: header3Y, width: repRepTypeWidth, height: rowHeight)
+        let repRepTypeString = NSAttributedString(string: "Type", attributes: alphaAttributes)
+         repRepTypeString.draw(in: repRepTypeRect)
 
         return origin.y + 60
     }
@@ -267,7 +299,7 @@ struct Representations: View {
         let alphaStyle = NSMutableParagraphStyle()
         numericStyle.alignment = .right
         alphaStyle.alignment = .left
-        let interField:CGFloat = 5
+        let interField:CGFloat = 4
 //        let searchResult = candidateNote(rep: rep)
 
         let numericAttributes: [NSAttributedString.Key: Any] = [
@@ -322,7 +354,7 @@ struct Representations: View {
         let repCauseNoString = NSAttributedString(string: rep.causeNo, attributes: alphaAttributes)
         repCauseNoString.draw(in: repCauseNoRect)
         
-        let repCauseTypeWidth: CGFloat = 20
+        let repCauseTypeWidth: CGFloat = 22
         let repCauseTypeStart: CGFloat = repCauseNoStart + repCauseNoWidth + interField
         let repCauseTypeRect = CGRect(x: repCauseTypeStart, y: rowStart, width: repCauseTypeWidth, height: rowHeight)
         let repCauseTypeString = NSAttributedString(string: rep.cause?.causeType ?? "Unknown", attributes: alphaAttributes)

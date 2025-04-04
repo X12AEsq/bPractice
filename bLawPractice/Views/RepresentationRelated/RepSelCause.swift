@@ -46,7 +46,7 @@ struct RepSelCause: View {
                                     nav.selectionPath.removeLast()
                                 }
                             }
-                            .buttonStyle(CustomButton1())
+                            .buttonStyle(CustomButtonBlack())
                             Spacer()
                         }
                         .padding(.leading, 20)

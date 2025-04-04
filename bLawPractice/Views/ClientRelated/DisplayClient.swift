@@ -18,7 +18,7 @@ struct DisplayClient: View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
                 Text(moduleTitle())
-                    .font(.system(size: 30))
+                    .font(.system(size: 20))
                     .padding(.leading, 20)
                     .padding(.bottom, 20)
             }

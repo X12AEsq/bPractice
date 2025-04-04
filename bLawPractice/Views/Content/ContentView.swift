@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import Foundation
 
 struct ContentView: View {
     @EnvironmentObject var CVModel:CommonViewModel
@@ -37,16 +38,22 @@ struct ContentView: View {
     
     @State var backupURL: URL?
     @State var backupReady:Bool = false
+    
+
+    var verDate:String = "28 March 2025"
 
     var body: some View {
         VStack {
-        HStack {
-            Text("\(clients.count) Clients")
-            Text(" \(causes.count) Causes")
-            Text(" \(representations.count) Representations")
-            Text(" \(appearances.count) Appearances")
-            Text(" \(notes.count) Notes")
-        }
+            HStack {
+                Text("bLaw Practice Version \(verDate)")
+            }
+            HStack {
+                Text("\(clients.count) Clients")
+                Text(" \(causes.count) Causes")
+                Text(" \(representations.count) Representations")
+                Text(" \(appearances.count) Appearances")
+                Text(" \(notes.count) Notes")
+            }
             NavigationStack(path: $nav.selectionPath) {
                 List {
                     NavigationLink("Select Client", value: NavSelectClient(selectionArgument: "main"))
@@ -71,6 +78,7 @@ struct ContentView: View {
                     SelectRepresentation(practice: selected ?? SDPractice(), option: "Mod")
                 }
                 .navigationTitle(practiceName())
+                .navigationBarTitleDisplayMode(.inline)
                 Spacer()
                     .toolbar {
                         Button {

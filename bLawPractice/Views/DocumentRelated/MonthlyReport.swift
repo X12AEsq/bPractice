@@ -26,7 +26,7 @@ struct MonthlyReport: View {
     @State var reportURL:URL?
 
     let fieldLengths = [
-        "Cause No":8,
+        "Cause No":10,
         "Client Name":35,
         "Lev":5,
         "Court":5,
@@ -68,7 +68,7 @@ struct MonthlyReport: View {
                             Text(" Report ")
                                 .font(.system(size: 30))
                         }
-                        .buttonStyle(CustomButton1())
+                        .buttonStyle(CustomButtonBlack())
                         Spacer()
                     }
                     .padding(.leading, 20)
@@ -113,7 +113,7 @@ struct MonthlyReport: View {
                             Text(" Done ")
                                 .font(.system(size: 30))
                         }
-                        .buttonStyle(CustomButton1())
+                        .buttonStyle(CustomButtonBlack())
                         Button {
                             reportLocation = ""
                             let report = generateReport()
@@ -124,7 +124,7 @@ struct MonthlyReport: View {
                             Text(" Print ")
                                 .font(.system(size: 30))
                         }
-                        .buttonStyle(CustomButton1())
+                        .buttonStyle(CustomButtonBlack())
                         if reportReady {
                             ShareLink(item: reportURL!)
                         }

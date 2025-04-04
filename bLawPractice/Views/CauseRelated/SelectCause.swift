@@ -52,7 +52,7 @@ struct SelectCause: View {
                 }
             }
             .navigationTitle(moduleTitle())
-        }
+            .navigationBarTitleDisplayMode(.inline)        }
         .onAppear() {
             print(option)
             print("")

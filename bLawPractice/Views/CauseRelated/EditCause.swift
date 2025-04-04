@@ -56,7 +56,7 @@ struct EditCause: View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
                 Text(moduleTitle())
-                    .font(.system(size: 30))
+                    .font(.system(size: 20))
                     .padding(.leading, 20)
                     .padding(.bottom, 20)
                 if statusMessage != "" {
@@ -128,13 +128,16 @@ struct EditCause: View {
                     
                 }
                 .onAppear(perform: {
-                    workClientID = CVModel.selectedClient?.internalID ?? -1
-                    workClientFullName = CVModel.selectedClient?.fullName ?? "No Client"
-                    workClientLastName = CVModel.selectedClient?.lastName ?? ""
-                    workClientFirstName = CVModel.selectedClient?.firstName ?? ""
-                    workClientMiddleName = CVModel.selectedClient?.middleName ?? ""
-                    workClientSuffix = CVModel.selectedClient?.suffix ?? ""
-                    workClient = CVModel.selectedClient
+                    workClientID = CVModel.selectedCause?.client?.internalID ?? -1
+                    workClientFullName = CVModel.selectedCause?.client?.fullName ?? "No Client"
+                    workClientLastName = CVModel.selectedCause?.client?.lastName ?? ""
+                    workClientFirstName = CVModel.selectedCause?.client?.firstName ?? ""
+                    workClientMiddleName = CVModel.selectedCause?.client?.middleName ?? ""
+                    workClientSuffix = CVModel.selectedCause?.client?.suffix ?? ""
+                    workClient = CVModel.selectedCause?.client
+                    if (workClient == nil) {
+                        workClient = CVModel.selectedClient
+                    }
                 })
                 .onFirstAppear {
                     initWorkArea()
@@ -270,10 +273,10 @@ struct EditCause: View {
         workOriginalCharge = startOriginalCharge
         workClientID = startClientID
         workClientFullName = startClientFullName
-        workClientLastName = ""
-        workClientFirstName = ""
-        workClientMiddleName = ""
-        workClientSuffix = ""
+        workClientLastName = startClientLastName
+        workClientFirstName = startClientFirstName
+        workClientMiddleName = startClientMiddleName
+        workClientSuffix = startClientSuffix
         workClient = startClient
     }
     
